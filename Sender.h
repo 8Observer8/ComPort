@@ -22,10 +22,12 @@ public:
         m_portName = portName;
     }
 
+    void open() throw( PortError );
+
     void send( const QByteArray &data ) throw( PortError );
 
 private:
-    QSerialPort m_port;
+    QSerialPort m_serialPort;
     QString m_portName;
     QSerialPort::BaudRate m_baudRate;
     QSerialPort::DataBits m_dataBits;

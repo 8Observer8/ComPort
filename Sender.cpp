@@ -6,41 +6,45 @@ Sender::Sender( const QString &portName,
                 QSerialPort::Parity parity,
                 QSerialPort::StopBits stopBits,
                 QSerialPort::FlowControl flowControl ) :
-    m_port( portName ),
+    m_portName( portName ),
     m_baudRate( baudRate ),
     m_dataBits( dataBits ),
     m_parity( parity ),
     m_stopBits( stopBits ),
     m_flowControl( flowControl )
 {
-    // Set the port name
-    m_port.setPortName( m_portName );
-
-    // Open the port
-    if ( !m_port.open( QIODevice::WriteOnly ) ) {
-        throw PortError( m_port.errorString().toStdString() );
-    }
-
-    m_port.setBaudRate( m_baudRate );
-    m_port.setDataBits( m_dataBits );
-    m_port.setParity( m_parity );
-    m_port.setStopBits( m_stopBits );
-    m_port.setFlowControl( m_flowControl );
 }
 
 Sender::~Sender()
 {
-    m_port.close();
+    m_serialPort.close();
+}
+
+void Sender::open() throw( PortError )
+{
+    // Set the port name
+    m_serialPort.setPortName( m_portName );
+
+    // Open the port
+    if ( !m_serialPort.open( QIODevice::WriteOnly ) ) {
+        throw PortError( m_serialPort.errorString().toStdString() );
+    }
+
+    m_serialPort.setBaudRate( m_baudRate );
+    m_serialPort.setDataBits( m_dataBits );
+    m_serialPort.setParity( m_parity );
+    m_serialPort.setStopBits( m_stopBits );
+    m_serialPort.setFlowControl( m_flowControl );
 }
 
 void Sender::send( const QByteArray &data ) throw( PortError )
 {
-    if ( !m_port.isOpen() ) {
-        throw PortError( m_port.errorString().toStdString() );
+    if ( !m_serialPort.isOpen() ) {
+        throw PortError( m_serialPort.errorString().toStdString() );
     }
 
     // Write data to the port
-    if ( m_port.write( data ) == -1 ) {
-        throw PortError( m_port.errorString().toStdString() );
+    if ( m_serialPort.write( data ) == -1 ) {
+        throw PortError( m_serialPort.errorString().toStdString() );
     }
 }

@@ -9,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_sender = new Sender( "COM1" );
+
     try {
-        m_sender = new Sender( "COM1" );
+        m_sender->open();
     } catch ( const PortError &e ) {
         QMessageBox::information( this, "Error", QString( e.what() ) );
     } catch ( ... ) {
